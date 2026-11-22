@@ -1,0 +1,18 @@
+# Weekly update pull requests. Python: only the packages we list ourselves in requirements.in /
+# requirements-dev.in are bumped; Dependabot then re-runs pip-compile, so requirements.txt /
+# requirements-dev.txt (every dependency pinned) follow. CI runs the tests and goldens on each PR.
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+    allow:
+      - dependency-type: direct
+    groups:
+      dev-tools:  # linters move together: one PR, the "not clean yet" lists may need an update
+        patterns: [ruff, mypy, pre-commit, pre-commit-hooks, pip-tools, scikit-image]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

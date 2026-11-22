@@ -1,0 +1,64 @@
+# Checks run on every `git commit` (install once: pre-commit install). Run them on everything: pre-commit run --all-files
+# Every hook runs a tool installed from requirements-dev.txt, so the versions are pinned in one place and Dependabot
+# updates them there.
+default_install_hook_types: [pre-commit]
+exclude: ^(notes/|tests/fixtures/local/)
+
+repos:
+  - repo: local
+    hooks:
+      - id: trailing-whitespace
+        name: trim trailing whitespace
+        entry: trailing-whitespace-fixer
+        language: system
+        types: [text]
+        exclude: ^tests/fixtures/  # expected outputs are compared byte for byte
+      - id: end-of-file-fixer
+        name: one newline at the end of each file
+        entry: end-of-file-fixer
+        language: system
+        types: [text]
+        exclude: ^tests/fixtures/
+      - id: check-merge-conflict
+        name: no merge conflict markers
+        entry: check-merge-conflict
+        language: system
+        types: [text]
+      - id: check-yaml
+        name: yaml files parse
+        entry: check-yaml
+        language: system
+        types: [yaml]
+      - id: check-toml
+        name: toml files parse
+        entry: check-toml
+        language: system
+        types: [toml]
+      - id: check-added-large-files
+        name: no large files (models, renders, weights)
+        entry: check-added-large-files --maxkb=1024
+        language: system
+      - id: ruff-check
+        name: ruff lint
+        entry: ruff check --force-exclude --fix
+        language: system
+        types_or: [python, pyi]
+      - id: ruff-format
+        name: ruff format
+        entry: ruff format --force-exclude
+        language: system
+        types_or: [python, pyi]
+      - id: mypy
+        name: mypy (whole project, settings in pyproject.toml)
+        entry: mypy
+        language: system
+        types_or: [python, pyi]
+        pass_filenames: false
+        require_serial: true
+      - id: vulture
+        name: vulture dead code (settings in pyproject.toml)
+        entry: vulture
+        language: system
+        types: [ python ]
+        pass_filenames: false
+        require_serial: true

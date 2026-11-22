@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false  # one Python version failing still shows the result of the other
+      matrix:
+        python-version: ["3.12", "3.13"]  # lowest supported (.python-version) and newest
+    name: checks (Python ${{ matrix.python-version }})
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+      - name: Install pinned dependencies
+        run: python -m pip install -r requirements.txt -r requirements-dev.txt
+      - name: Lint, format, types (pre-commit)
+        run: pre-commit run --all-files --show-diff-on-failure
+      - name: Tests (unit, integration, end-to-end, golden builds)
+        run: python tests/run_all.py

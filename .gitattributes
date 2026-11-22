@@ -1,0 +1,8 @@
+# Every text file is stored and checked out with LF line endings, on every OS: ruff format and the pre-commit hooks
+# expect LF, and Windows git (core.autocrlf) would otherwise check out CRLF. Binary files are detected automatically.
+* text=auto eol=lf
+*.glb binary
+*.png binary
+*.jpg binary
+*.pdf binary
+*.pkl binary

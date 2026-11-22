@@ -1,0 +1,232 @@
+[project]
+name = "image-to-bricks"
+description = "Turn a coloured 3D model (GLB) into a LEGO build with step-by-step instructions."
+requires-python = ">=3.12"
+license = "GPL-3.0-or-later"
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = ["notes", "tests/fixtures/local"]
+
+[tool.ruff.format]
+quote-style = "double"
+line-ending = "lf"
+
+[tool.ruff.lint]
+select = [
+    "E", "W",   # pycodestyle
+    "F",        # pyflakes: unused names, undefined names
+    "I",        # import order
+    "N",        # pep8 names
+    "UP",       # modern syntax for Python 3.10
+    "B",        # likely bugs
+    "SIM",      # simpler code
+    "C4",       # comprehensions
+    "RET",      # return statements
+    "PL",       # pylint: too many arguments / branches / statements, magic values, global
+    "C90",      # cyclomatic complexity
+    "ANN",      # type annotations on every function
+    "D",        # docstrings
+    "RUF",      # ruff's own checks
+    "ERA",      # commented-out code
+    "ARG",      # unused arguments
+    "FBT",      # boolean positional arguments (flags that switch behaviour)
+    "TID251",   # banned APIs (below)
+]
+ignore = [
+    # Project docstring style: the summary may wrap onto the next lines and the closing quotes may follow the text.
+    "D205", "D209", "D213", "D203", "D401",
+    "D403",  # a docstring may start with a type or a code name: """int [z, y, x]: ...""", """argparse type: ..."""
+    "D105", "D107",  # magic methods and __init__ are documented on the class
+]
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+# A bare ndarray annotation passes mypy with numpy >= 2.3 (default type arguments) but fails with older numpy.
+"numpy.ndarray".msg = "annotate arrays as numpy.typing.NDArray[...] (e.g. NDArray[np.bool_], NDArray[Any])"
+
+[tool.ruff.lint.pylint]
+max-args = 5
+max-positional-args = 5
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.per-file-ignores]
+# Tests: test names say what they check, asserted numbers are the expected values, and the script-style tests
+# install their stubs before importing the package.
+"tests/**" = ["D100", "D103", "PLR2004", "E402", "ANN201", "FBT003"]
+# Not clean yet: the rules each file still breaks. Fix a file, then delete its codes (or its line);
+# tests/test_lint_ratchet.py fails when a listed code is no longer broken, so this list only ever shrinks.
+"tests/fixtures/public/figure_shapes.py" = ["B905", "C408", "TID251"]
+"tests/fixtures/public/make_public_fixtures.py" = ["B905"]
+"tests/run_all.py" = ["D101", "D102", "FBT001", "PLW1510"]
+"tests/support.py" = ["ANN001", "ANN003", "N818", "PLC0415", "PLW1510", "TID251"]
+"tests/test_accent.py" = ["ARG005", "SIM115"]
+"tests/test_add_later.py" = ["ANN001", "PLW0603", "RUF005"]
+"tests/test_anchor_floating.py" = ["ANN001", "ANN202", "PLW0603"]
+"tests/test_axes.py" = ["ANN001", "ANN002", "ANN003", "ARG001", "ARG005", "N817", "PLW0603", "SIM115"]
+"tests/test_base.py" = ["ANN001", "SIM115"]
+"tests/test_base_holds_together.py" = ["D101"]
+"tests/test_base_layout.py" = ["ANN001", "ARG005", "PLW0603", "SIM115"]
+"tests/test_base_packer.py" = ["ANN001", "ANN003", "PLC0415", "PLW0603", "RUF005", "RUF059"]
+"tests/test_base_ties.py" = ["ANN001", "ANN202", "PLR0913", "PLR0917", "PLW0603", "RUF059"]
+"tests/test_base_zones.py" = ["ANN001", "PLW0603"]
+"tests/test_catalog_tools.py" = ["D400", "D415", "PLR0913", "PLR0917", "PLW1510", "RUF013"]
+"tests/test_check_cost_l.py" = ["ANN001", "D400", "D415", "SIM115"]
+"tests/test_cleanup.py" = ["ANN001", "E731", "N806"]
+"tests/test_cli_options.py" = ["ANN001", "ANN002", "ANN003", "C408", "D400", "D415"]
+"tests/test_color_cleanup.py" = ["ANN001", "PLC0415", "PLW0603", "RUF059"]
+"tests/test_colorize_mesh_helpers.py" = ["D400", "D415", "RUF013"]
+"tests/test_colour_mapping.py" = ["D400", "D415", "RUF005", "TID251"]
+"tests/test_colour_sampling.py" = ["D400", "D415", "RUF005", "RUF013", "TID251"]
+"tests/test_details.py" = ["E501"]
+"tests/test_drop_box.py" = ["ANN001", "PLW0603"]
+"tests/test_floating.py" = ["RUF015"]
+"tests/test_footing_margin.py" = ["ANN001"]
+"tests/test_front_oval.py" = ["ANN001", "PLW0603", "RUF059"]
+"tests/test_golden_builds.py" = ["B905", "FBT001"]
+"tests/test_ground_overhangs.py" = ["ANN001", "PLW0603", "SIM115"]
+"tests/test_hat_shell.py" = ["ANN001", "PLW0603", "RUF059"]
+"tests/test_l_pieces.py" = ["ANN001", "ANN003", "ANN202", "D400", "D415", "RUF005", "RUF015", "SIM115"]
+"tests/test_layer_maps.py" = ["ANN001", "PLW0603", "SIM115"]
+"tests/test_log.py" = ["SIM115"]
+"tests/test_merge_plates.py" = ["ANN001", "ANN202", "FBT001", "PLW0603", "RUF059"]
+"tests/test_mesh_geometry.py" = ["ANN002", "ANN003", "D400", "D415", "TID251"]
+"tests/test_nose_brick.py" = ["RUF015"]
+"tests/test_owned_layers.py" = ["ANN001", "ARG001", "PLW0603", "SIM115"]
+"tests/test_pipeline_end_to_end.py" = ["D400", "D415", "RUF005"]
+"tests/test_prefer_bricks.py" = ["ANN001", "PLW0603"]
+"tests/test_rarely_used_colour_options.py" = ["C408", "D400", "D415", "TID251"]
+"tests/test_retile.py" = ["ANN001", "ANN003", "N812", "N817"]
+"tests/test_sheets.py" = ["ANN001", "PLW0603", "RET504"]
+"tests/test_stability.py" = ["ANN001"]
+"tests/test_stock.py" = ["ANN001", "ANN002", "C416", "D400", "D415", "E731", "FBT002", "PLR0913", "PLR0917", "SIM115"]
+"tests/test_stock_ledger.py" = ["D400", "D415"]
+"tests/test_subassemblies.py" = ["ANN001", "ANN202", "B905", "FBT002", "PLW0603", "RUF005", "RUF059", "SIM115"]
+"tests/test_thicken.py" = ["ANN001", "E501", "E731", "N806", "SIM210"]
+"tests/test_tie.py" = ["ANN001", "FBT002"]
+"tests/test_tie_speed.py" = ["ANN001", "ANN202", "N803", "N806", "PLW0603"]
+"tests/test_trim.py" = ["E731"]
+"tests/test_trim_snap.py" = ["ANN001", "ANN202", "PLC0415", "PLW0603"]
+"tests/test_views.py" = ["ANN001", "N814", "PLC0415", "PLR0913", "PLR0917", "RUF059", "SIM115", "TID251"]
+"tests/test_voxel.py" = ["ANN001", "ANN202", "ANN204", "C408", "D101", "D102", "E731", "N803", "N806"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+explicit_package_bases = true
+mypy_path = ["tests", "tests/fixtures/public"]
+files = ["image_to_bricks", "tools", "tests", "my_bricks_catalog", "model_to_bricks.py"]
+exclude = ["^notes/", "^tests/fixtures/local/"]
+warn_unreachable = true
+untyped_calls_exclude = ["trimesh"]  # trimesh ships partial annotations; its untyped helpers are called as-is
+
+[[tool.mypy.overrides]]
+# Libraries without type information.
+module = ["trimesh.*", "scipy.*", "pyrender.*", "reportlab.*", "fast_simplification.*", "rtree.*", "networkx.*", "tqdm.*", "skimage.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+# Tests: test functions and their small helpers need no annotations (their bodies are still type-checked).
+module = [
+    "figure_shapes",
+    "make_public_fixtures",
+    "run_all",
+    "support",
+    "test_accent",
+    "test_add_later",
+    "test_anchor_floating",
+    "test_axes",
+    "test_base",
+    "test_base_bricks",
+    "test_base_holds_together",
+    "test_base_layout",
+    "test_base_packer",
+    "test_base_ties",
+    "test_base_zones",
+    "test_catalog_tools",
+    "test_check_cost_l",
+    "test_cleanup",
+    "test_cli_options",
+    "test_color_cleanup",
+    "test_colorize_mesh_helpers",
+    "test_colour_mapping",
+    "test_colour_sampling",
+    "test_details",
+    "test_drop_box",
+    "test_floating",
+    "test_footing_margin",
+    "test_front_oval",
+    "test_golden_builds",
+    "test_ground_overhangs",
+    "test_hat_shell",
+    "test_l_pieces",
+    "test_layer_maps",
+    "test_log",
+    "test_merge_plates",
+    "test_mesh_geometry",
+    "test_nose_brick",
+    "test_owned_layers",
+    "test_paint",
+    "test_pipeline_end_to_end",
+    "test_prefer_bricks",
+    "test_rarely_used_colour_options",
+    "test_retile",
+    "test_sheets",
+    "test_stability",
+    "test_stock",
+    "test_stock_ledger",
+    "test_subassemblies",
+    "test_thicken",
+    "test_tie",
+    "test_tie_speed",
+    "test_trim",
+    "test_trim_snap",
+    "test_views",
+    "test_voxel",
+]
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+disallow_untyped_calls = false
+
+[[tool.mypy.overrides]]
+# Not clean yet: modules with type errors left. Fix a module, then delete its line; tests/test_lint_ratchet.py fails
+# when a listed module has no errors any more, so this list only ever shrinks.
+module = [
+    "figure_shapes",
+    "make_public_fixtures",
+    "support",
+    "test_add_later",
+    "test_axes",
+    "test_base",
+    "test_base_layout",
+    "test_base_ties",
+    "test_catalog_tools",
+    "test_cleanup",
+    "test_cli_options",
+    "test_colorize_mesh_helpers",
+    "test_colour_mapping",
+    "test_colour_sampling",
+    "test_golden_builds",
+    "test_l_pieces",
+    "test_mesh_geometry",
+    "test_owned_layers",
+    "test_pipeline_end_to_end",
+    "test_rarely_used_colour_options",
+    "test_retile",
+    "test_stock",
+    "test_stock_ledger",
+    "test_tie_speed",
+    "test_views",
+]
+ignore_errors = true
+
+[tool.vulture]
+# dead code: run `vulture` (no arguments) in the project folder; pre-commit runs it on the whole project, because a
+# name used in another file is not dead. Tests are included, so helpers only tests use are not reported.
+paths = ["image_to_bricks", "tools", "tests", "my_bricks_catalog", "model_to_bricks.py"]
+min_confidence = 60
+# names a library reads, not our code: pyrender camera attribute, matplotlib keyword arguments in the
+# outputs_handler.VoxelAxes protocol, check_cost.CostLine columns (written to the CSV by iterating the row)
+ignore_names = ["yfov", "edgecolor", "linewidth", "aspect", "unit_pln", "cost_pln"]

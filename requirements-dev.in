@@ -1,0 +1,11 @@
+# Tools for checking the code (pre-commit runs ruff, mypy, vulture and the pre-commit-hooks installed from here).
+# requirements-dev.txt is generated from this file:
+#     pip-compile requirements-dev.in
+-c requirements.txt  # shared dependencies keep the versions of the runtime pins
+mypy==2.3.1
+pip-tools==7.5.3
+pre-commit==4.7.0
+pre-commit-hooks==6.0.0
+ruff==0.16.9
+scikit-image==0.25.2  # tests/fixtures/public/make_public_fixtures.py (regenerating the public test models)
+vulture==2.16  # dead code check (pre-commit)

@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brick stock editor</title>
+<style>
+:root{--bg:#f6f5f2;--card:#fff;--ink:#1d1d1b;--mute:#6b6a65;--line:#e1dfd8;--accent:#c8102e;--ok:#1b7a3d;--chg:#fff6d6;--btn:#efede7}
+@media (prefers-color-scheme:dark){:root{--bg:#161615;--card:#212120;--ink:#ecebe6;--mute:#9a988f;--line:#34332f;--accent:#ff4d62;--ok:#4cc27a;--chg:#3b3412;--btn:#2d2c29}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 system-ui,Segoe UI,Roboto,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 16px}
+h1{font-size:18px;margin:0 0 8px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button,select,input{font:inherit;color:var(--ink)}
+button{background:var(--btn);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer}
+button:hover{border-color:var(--mute)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+button:disabled{opacity:.45;cursor:default}
+input[type=search],input[type=text],input[type=number],select{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+input[type=search]{width:190px}
+.stat{color:var(--mute);margin-left:auto}
+.stat b{color:var(--ink)}
+#msg{padding:8px 16px;font-size:14px;min-height:20px}
+#msg.ok{color:var(--ok)} #msg.err{color:var(--accent)}
+main{padding:0 16px 80px}
+.empty{padding:40px 0;text-align:center;color:var(--mute)}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th,td{padding:5px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.04em;background:var(--bg);position:sticky;top:0}
+tr.chg td{background:var(--chg)}
+tr.special td.t{font-style:italic}
+.sw{display:inline-block;width:14px;height:14px;border-radius:4px;border:1px solid rgba(0,0,0,.35);vertical-align:-2px;margin-right:6px}
+.qty{display:flex;align-items:center;gap:4px}
+.qty button{width:32px;padding:4px 0;font-weight:700}
+.qty input{width:62px;text-align:center}
+.delta{font-size:12px;color:var(--mute);min-width:70px}
+.delta.up{color:var(--ok)} .delta.dn{color:var(--accent)}
+.num{text-align:right;color:var(--mute)}
+details{margin:12px 0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+summary{cursor:pointer;font-weight:600}
+.form{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
+.form input[type=number]{width:70px}
+.hint{color:var(--mute);font-size:13px;margin:6px 0 0}
+.wrap{overflow-x:auto}
+</style>
+</head>
+<body>
+<header>
+  <h1>Brick stock editor <span style="font-weight:400;color:var(--mute)">· catalog_stock.csv</span></h1>
+  <div class="bar">
+    <button id="open" class="primary">Open catalog_stock.csv</button>
+    <button id="save" disabled>Save (Ctrl+S)</button>
+    <input id="q" type="search" placeholder="Search (e.g. red 4x2)" disabled>
+    <select id="ftype" disabled><option value="">All types</option></select>
+    <select id="fcol" disabled><option value="">All colours</option></select>
+    <label><input id="fchg" type="checkbox" disabled> changed only</label>
+    <label><input id="fzero" type="checkbox" disabled> hide 0</label>
+    <span class="stat" id="stat"></span>
+  </div>
+</header>
+<div id="msg">Click “Open” and choose <b>catalog_stock.csv</b> from the my_bricks_catalog folder.</div>
+<main>
+  <details id="addbox" hidden>
+    <summary>Add a piece that is not in the table</summary>
+    <div class="form">
+      <select id="a_type"><option>Plate</option><option>Brick</option><option>Plate (special)</option><option>Brick (special)</option></select>
+      <input id="a_w" type="number" min="1" placeholder="long" title="long side (studs)"> ×
+      <input id="a_d" type="number" min="1" placeholder="short" title="short side (studs)">
+      <input id="a_col" type="text" list="cols" placeholder="Colour name">
+      <input id="a_qty" type="number" min="0" value="1" title="quantity">
+      <input id="a_shape" type="text" placeholder="shape (special only)">
+      <button id="a_btn">Add</button>
+    </div>
+    <p class="hint">Long side first (4×2, not 2×4). If the piece already exists, its quantity goes up instead. Height: plate = 1, brick = 3.</p>
+    <datalist id="cols"></datalist>
+  </details>
+  <div class="wrap"><table id="tbl" hidden>
+    <thead><tr><th>Colour</th><th>Type</th><th>Size</th><th>Part</th><th>Owned</th><th>Change</th><th class="num">In photos</th><th class="num">Manual</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+  <div class="empty" id="empty" hidden>No pieces match the filter.</div>
+</main>
+<script>
+const COLORS={"Black":"#1b1b1b","White":"#f3f3ef","Red":"#c91a09","Yellow":"#f2cd37","Blue":"#0055bf","Green":"#237841","Bright Green":"#4b9f4a","Dark Azure":"#078bc9","Medium Azure":"#36abc8","Light Bluish Gray":"#a0a5a9","Very Light Bluish Gray":"#d0d3d1","Dark Bluish Gray":"#6c6e68","Olive Green":"#77774e","Sand Green":"#a0bcac","Tan":"#e4cd9e","Light Nougat":"#f6d7b3","Medium Nougat":"#aa7d55","Reddish Brown":"#582a12","Orange":"#fe8a18","Dark Orange":"#a95500","Bright Light Orange":"#f8bb3d","Bright Pink":"#e4adc8","Trans-Red":"#c91a09aa","Trans-Black":"#635f52aa","Trans-Medium Blue":"#6c9fd0aa","Chrome Silver":"#d4d4d4"};
+const HEAD=["piece_type","width_studs","depth_studs","height_plates","color_name","quantity","in_photos","manual","shape","bricklink_part"];
+let rows=[], fileHandle=null, fileName="catalog_stock.csv", dirty=false, delim=",", hasPhotos=true, eol="\r\n";
+const $=id=>document.getElementById(id);
+
+function parseCSV(text){
+  text=text.replace(/^﻿/,"");
+  eol=text.includes("\r\n")?"\r\n":"\n";
+  const first=text.split(/\r?\n/)[0];
+  delim=(first.split(";").length>first.split(",").length)?";":",";
+  const out=[];let row=[],f="",q=false;
+  for(let i=0;i<text.length;i++){const c=text[i];
+    if(q){ if(c=='"'){ if(text[i+1]=='"'){f+='"';i++} else q=false } else f+=c }
+    else if(c=='"') q=true;
+    else if(c==delim){row.push(f);f=""}
+    else if(c=="\n"||c=="\r"){ if(c=="\r"&&text[i+1]=="\n")i++; row.push(f);out.push(row);row=[];f="" }
+    else f+=c;
+  }
+  if(f!==""||row.length){row.push(f);out.push(row)}
+  return out.filter(r=>r.some(x=>x!==""));
+}
+function esc(v){v=String(v??"");return /[",\n\r;]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
+function toCSV(){
+  const lines=[HEAD.join(delim)];
+  for(const r of rows)lines.push(HEAD.map(h=>esc(r[h])).join(delim));
+  return lines.join(eol)+eol;
+}
+function load(text){
+  const t=parseCSV(text);
+  const head=t[0].map(h=>h.trim());
+  for(const need of ["piece_type","width_studs","depth_studs","color_name","quantity"])
+    if(!head.includes(need)) throw new Error("This does not look like catalog_stock.csv (missing column "+need+")");
+  hasPhotos=head.includes("in_photos");
+  rows=t.slice(1).map(c=>{const o={};head.forEach((h,i)=>o[h]=c[i]??"");
+    HEAD.forEach(h=>{if(o[h]===undefined)o[h]=""});
+    o.quantity=parseInt(o.quantity)||0; o.orig=o.quantity;
+    o.in_photos=hasPhotos?(parseInt(o.in_photos)||0):0;
+    return o});
+  dirty=false; setup(); render();
+}
+function key(r){return [r.piece_type,r.width_studs,r.depth_studs,r.color_name,r.shape].join("|")}
+function setup(){
+  const types=[...new Set(rows.map(r=>r.piece_type))], cols=[...new Set(rows.map(r=>r.color_name))].sort();
+  $("ftype").innerHTML='<option value="">All types</option>'+types.map(t=>`<option>${t}</option>`).join("");
+  $("fcol").innerHTML='<option value="">All colours</option>'+cols.map(t=>`<option>${t}</option>`).join("");
+  $("cols").innerHTML=cols.map(c=>`<option value="${c}">`).join("");
+  ["q","ftype","fcol","fchg","fzero"].forEach(i=>$(i).disabled=false);
+  $("addbox").hidden=false; $("tbl").hidden=false;
+}
+function render(){
+  const q=$("q").value.toLowerCase().trim().split(/\s+/).filter(Boolean), ft=$("ftype").value, fc=$("fcol").value, fchg=$("fchg").checked, fz=$("fzero").checked;
+  const tb=$("tbl").tBodies[0]; tb.innerHTML=""; let shown=0;
+  rows.forEach((r,i)=>{
+    const size=r.width_studs+"x"+r.depth_studs;
+    const hay=(r.color_name+" "+r.piece_type+" "+size+" "+r.shape+" "+r.bricklink_part).toLowerCase();
+    if(q.length&&!q.every(w=>hay.includes(w)))return;
+    if(ft&&r.piece_type!==ft)return; if(fc&&r.color_name!==fc)return;
+    if(fchg&&r.quantity===r.orig)return; if(fz&&r.quantity===0)return;
+    shown++;
+    const d=r.quantity-r.orig, tr=document.createElement("tr");
+    if(d)tr.className="chg"; if(/special/.test(r.piece_type))tr.classList.add("special");
+    const manual=hasPhotos?r.quantity-r.in_photos:"";
+    tr.innerHTML=`<td><span class="sw" style="background:${COLORS[r.color_name]||"#bbb"}"></span>${r.color_name}</td>
+      <td class="t">${r.piece_type}${r.shape?` <span style="color:var(--mute)">· ${r.shape}</span>`:""}</td>
+      <td><b>${size}</b></td><td style="color:var(--mute)">${r.bricklink_part||""}</td>
+      <td><div class="qty"><button data-i="${i}" data-d="-1" title="-1">−</button><input type="number" min="0" value="${r.quantity}" data-i="${i}"><button data-i="${i}" data-d="1" title="+1">+</button><button data-i="${i}" data-d="5" title="+5">+5</button></div></td>
+      <td class="delta ${d>0?"up":d<0?"dn":""}">${d?(d>0?"+":"")+d+" (was "+r.orig+")":""}</td>
+      <td class="num">${hasPhotos?r.in_photos:""}</td><td class="num">${manual}</td>`;
+    tb.appendChild(tr);
+  });
+  $("empty").hidden=shown>0;
+  const tot=rows.reduce((s,r)=>s+r.quantity,0), changed=rows.filter(r=>r.quantity!==r.orig).length;
+  $("stat").innerHTML=`<b>${tot}</b> pieces · ${rows.length} lines · ${changed?`<b>${changed}</b> changed`:"no changes"}`;
+  $("save").disabled=!dirty; $("save").classList.toggle("primary",dirty);
+}
+function setQty(i,v){rows[i].quantity=Math.max(0,v|0);dirty=true;msg("Unsaved changes","");render()}
+function msg(t,c){const m=$("msg");m.textContent=t;m.className=c||""}
+
+$("tbl").addEventListener("click",e=>{const b=e.target.closest("button[data-d]");if(!b)return;const i=+b.dataset.i;setQty(i,rows[i].quantity+ +b.dataset.d)});
+$("tbl").addEventListener("change",e=>{const t=e.target;if(t.matches("input[data-i]"))setQty(+t.dataset.i,parseInt(t.value)||0)});
+["q","ftype","fcol","fchg","fzero"].forEach(i=>$(i).addEventListener("input",render));
+$("a_btn").onclick=()=>{
+  const type=$("a_type").value,w=parseInt($("a_w").value),d=parseInt($("a_d").value),col=$("a_col").value.trim(),qty=parseInt($("a_qty").value)||0;
+  const spec=/special/.test(type),shape=spec?$("a_shape").value.trim():"";
+  if(!w||!d||!col){msg("Fill in size and colour first.","err");return}
+  const W=Math.max(w,d),D=Math.min(w,d), probe={piece_type:type,width_studs:String(W),depth_studs:String(D),color_name:col,shape};
+  const ex=rows.findIndex(r=>key(r)===key(probe));
+  if(ex>=0){rows[ex].quantity+=qty}
+  else rows.push({piece_type:type,width_studs:String(W),depth_studs:String(D),height_plates:type.startsWith("Plate")?"1":"3",color_name:col,quantity:qty,orig:0,in_photos:0,manual:"",shape,bricklink_part:""});
+  dirty=true;msg("Added "+qty+" × "+col+" "+type+" "+W+"x"+D,"ok");setup();render();
+};
+
+async function pickOpen(){
+  if(window.showOpenFilePicker){
+    try{
+      const [h]=await showOpenFilePicker({types:[{description:"CSV",accept:{"text/csv":[".csv"]}}]});
+      fileHandle=h;fileName=h.name;load(await (await h.getFile()).text());msg("Loaded "+fileName+". Click + / − or type a number, then Save.","ok");
+    }catch(e){if(e.name!=="AbortError")msg(e.message,"err")}
+  }else $("fallback").click();
+}
+$("open").onclick=pickOpen;
+const fb=document.createElement("input");fb.type="file";fb.accept=".csv";fb.id="fallback";fb.hidden=true;document.body.appendChild(fb);
+fb.onchange=async()=>{const f=fb.files[0];if(!f)return;fileName=f.name;fileHandle=null;try{load(await f.text());msg("Loaded "+fileName+". This browser cannot write back to the file: Save will download a new copy.","ok")}catch(e){msg(e.message,"err")}};
+
+function syncManual(){ if(hasPhotos) rows.forEach(r=>r.manual=String(r.quantity-r.in_photos)); else rows.forEach(r=>{r.in_photos=r.in_photos||0}); }
+async function save(){
+  if(!rows.length)return;
+  if(!hasPhotos){hasPhotos=true} // writes in_photos=0 / manual=quantity for old files
+  rows.forEach(r=>{r.manual=String(r.quantity-r.in_photos)});
+  const text=toCSV();
+  try{
+    if(fileHandle){
+      const w=await fileHandle.createWritable();await w.write(text);await w.close();
+      rows.forEach(r=>r.orig=r.quantity);dirty=false;msg("Saved to "+fileName+" at "+new Date().toLocaleTimeString()+".","ok");render();
+    }else{
+      const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type:"text/csv"}));a.download=fileName;a.click();
+      rows.forEach(r=>r.orig=r.quantity);dirty=false;msg("Downloaded "+fileName+": replace the file in my_bricks_catalog with it.","ok");render();
+    }
+  }catch(e){msg("Could not save: "+e.message+" (is the file open in Excel?)","err")}
+}
+$("save").onclick=save;
+addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="s"){e.preventDefault();if(dirty)save()}});
+addEventListener("beforeunload",e=>{if(dirty){e.preventDefault();e.returnValue=""}});
+</script>
+</body>
+</html>

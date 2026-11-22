@@ -195,9 +195,9 @@ cython_debug/
 .abstra/
 
 # Visual Studio Code
-#   Visual Studio Code specific template is maintained in a separate VisualStudioCode.gitignore 
+#   Visual Studio Code specific template is maintained in a separate VisualStudioCode.gitignore
 #   that can be found at https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
-#   and can be added to the global gitignore or merged into this file. However, if you prefer, 
+#   and can be added to the global gitignore or merged into this file. However, if you prefer,
 #   you could uncomment the following to ignore the entire vscode folder
 # .vscode/
 # Temporary file for partial code execution
@@ -216,3 +216,105 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ======================================================================
+# image-to-bricks: files that must never be on GitHub
+# Rules go by file TYPE or by generated-folder pattern, never by one file
+# name. Copyrighted / third-party models, photos and other people's
+# instructions all fall under the types below.
+# ======================================================================
+
+# --- 3D models and meshes (third-party, licensed or generated) ---------
+*.glb
+*.gltf
+*.stl
+*.obj
+*.mtl
+*.fbx
+*.ply
+*.3mf
+*.dae
+*.usd
+*.usdz
+*.blend
+*.blend[0-9]
+
+# --- Photos and images (reference photos, catalogue photos, renders) ---
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.heic
+*.tif
+*.tiff
+*.bmp
+*.gif
+
+# --- Documents (generated instructions, downloaded manuals) ------------
+*.pdf
+
+# --- Video, audio, archives ---------------------------------------------
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.wav
+*.mp3
+*.zip
+*.7z
+*.rar
+*.tar
+*.tar.gz
+*.tgz
+
+# --- Generated data and caches ------------------------------------------
+*.pkl
+*.pickle
+*.npy
+*.npz
+*.h5
+*.ckpt
+*.pt
+*.pth
+*.safetensors
+*.onnx
+
+# --- Run outputs (every run writes a new folder) ------------------------
+lego_output*/
+*_output*/
+colorize_step*/
+checks_out/
+*_work/
+**/debug/
+**/layers/
+
+# --- Editors and OS ------------------------------------------------------
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+.claude/settings.local.json
+
+# --- Private: kept on this computer, never on GitHub -------------------
+# Development diary and notes.
+notes/
+# Personal brick catalogue data (the catalogue scripts stay public).
+my_bricks_catalog/*.csv
+my_bricks_catalog/README.md
+# Hand-built bases for local (third-party) models.
+build_optimization/
+
+# --- Allowed exceptions (small files we create ourselves) ---------------
+# Test fixtures and README images may be committed on purpose.
+!tests/fixtures/**
+!docs/**
+
+# --- Local-only regression references (never on GitHub) ---------------
+# Third-party / copyrighted models used as local golden tests.
+# Tests that need them must skip when the folder is missing.
+tests/fixtures/local/
+# The fixtures exception above must not bring back Python caches.
+tests/fixtures/**/__pycache__/
+tests/fixtures/**/*.py[cod]
