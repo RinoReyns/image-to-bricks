@@ -34,7 +34,7 @@ mypy-extensions==1.2.0
     # via
     #   librt
     #   mypy
-networkx==3.4.2
+networkx==3.7
     # via
     #   -c requirements.txt
     #   scikit-image
