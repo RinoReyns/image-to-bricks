@@ -22,7 +22,7 @@ kiwisolver==1.5.1
     # via matplotlib
 matplotlib==3.11.2
     # via -r requirements.in
-networkx==3.4.2
+networkx==3.7
     # via
     #   -r requirements.in
     #   pyrender
