@@ -17,7 +17,7 @@ jobs:
         python-version: ["3.12", "3.13"]  # lowest supported (.python-version) and newest
     name: checks (Python ${{ matrix.python-version }})
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
