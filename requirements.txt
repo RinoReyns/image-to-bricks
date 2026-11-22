@@ -20,7 +20,7 @@ imageio==2.38.2
     # via pyrender
 kiwisolver==1.5.1
     # via matplotlib
-matplotlib==3.10.9
+matplotlib==3.11.2
     # via -r requirements.in
 networkx==3.7
     # via
