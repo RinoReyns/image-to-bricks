@@ -1,0 +1,37 @@
+{
+  "description": "Golden builds of our own test figures. {fixtures} = this folder, {outdir} = a new temp folder. Each case freezes <name>.expected_inventory.csv, <name>.expected_fingerprint.txt and (with --stock) <name>.expected_stock_report.csv. Regenerate on purpose only: python tests/test_golden_builds.py --update-golden",
+  "cases": [
+    {
+      "name": "robot",
+      "model": "robot.glb",
+      "covers": "general clean-up options, stock with L pieces, bricks first, plate merging, anchor floating",
+      "arguments": ["--rotate-x", "90", "--target-studs", "12", "--voxel-supersample", "3", "--voxel-thin-threshold", "0.05",
+                    "--hollow", "--shell", "2", "--strict-hidden", "--base", "2", "--base-shape", "rounded", "--base-color", "Green",
+                    "--front", "down", "--tie-recolor", "10", "--cleanup-small", "--cleanup-seams", "6", "--cleanup-stacks", "2",
+                    "--stock", "{fixtures}/stock.csv", "--use-l-pieces", "--open-gaps", "--fill-pinholes", "3", "--despeckle", "2",
+                    "--join-corners", "3", "--dark-enclaves", "5", "--ground-overhangs", "2", "--anchor-floating", "2",
+                    "--merge-plates", "--prefer-bricks", "--save-model", "--no-views", "--outdir", "{outdir}"]
+    },
+    {
+      "name": "frog",
+      "model": "frog.glb",
+      "covers": "colour list + alias, layered base with hidden layers and a plate size limit, base filled from spare stock",
+      "arguments": ["--rotate-x", "90", "--target-studs", "12", "--voxel-supersample", "3", "--hollow", "--shell", "1",
+                    "--colors", "Bright Green,Tan,Red,Black,White", "--color-alias", "Bright Green=Green",
+                    "--base", "3", "--base-hidden-layers", "2", "--base-max-plate", "6x6", "--base-color", "Green",
+                    "--front", "down", "--stock", "{fixtures}/stock.csv", "--base-fill-colors", "Green,Black",
+                    "--cleanup-small", "--despeckle", "2", "--neutral-enclaves", "--save-model", "--no-views",
+                    "--outdir", "{outdir}"]
+    },
+    {
+      "name": "bear",
+      "model": "bear.glb",
+      "covers": "trim ring (scarf) + trim snap, base zone (pond), no stock, PDF + views",
+      "arguments": ["--rotate-x", "90", "--target-studs", "12", "--voxel-supersample", "3", "--hollow", "--shell", "2",
+                    "--colors", "Nougat,Light Nougat,Dark Azure,Black,White", "--trim-colors", "Dark Azure", "--trim-snap", "12",
+                    "--base", "2", "--base-shape", "rounded", "--base-color", "Green", "--base-zone", "Dark Azure=pond:right:18",
+                    "--front", "down", "--tie-recolor", "10", "--cleanup-small", "--fill-pinholes", "3",
+                    "--anchor-floating", "2", "--merge-plates", "--pdf", "--save-model", "--outdir", "{outdir}"]
+    }
+  ]
+}

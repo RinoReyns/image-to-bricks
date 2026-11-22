@@ -1,0 +1,16 @@
+# Packages the code imports, with the exact versions the golden builds were frozen with.
+# requirements.txt is generated from this file and pins every dependency of these packages too:
+#     pip-compile requirements.in
+# Change versions here, never in requirements.txt. Dependabot bumps these lines and re-runs pip-compile.
+fast-simplification==0.1.13  # trimesh mesh decimation (tools/colorize_mesh.py)
+matplotlib==3.10.9
+networkx==3.4.2  # trimesh graph functions
+numpy==2.2.6
+opencv-python==5.0.0.93
+pillow==12.3.0
+pyrender==0.1.45  # tools/colorize_mesh.py
+reportlab==5.0.0
+rtree==1.4.1  # trimesh nearest-point queries
+scipy==1.15.3
+tqdm==4.69.0
+trimesh==4.12.2
