@@ -10,7 +10,7 @@ contourpy==1.4.0
     # via matplotlib
 cycler==0.12.1
     # via matplotlib
-fast-simplification==0.1.13
+fast-simplification==0.2.0
     # via -r requirements.in
 fonttools==4.68.0
     # via matplotlib
