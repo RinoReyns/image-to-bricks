@@ -13,4 +13,4 @@ reportlab==5.0.0
 rtree==1.4.1  # trimesh nearest-point queries
 scipy==1.15.3
 tqdm==4.69.0
-trimesh==4.12.2
+trimesh==5.2.1
