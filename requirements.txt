@@ -70,7 +70,7 @@ six==1.17.0
     # via pyrender
 tqdm==4.69.0
     # via -r requirements.in
-trimesh==4.12.2
+trimesh==5.2.1
     # via
     #   -r requirements.in
     #   pyrender
