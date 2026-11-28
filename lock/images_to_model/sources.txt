@@ -1,0 +1,8 @@
+# name  url  commit  install
+# install: path = put on the Python path (.pth), build = compiled CUDA extension, python = plain package,
+#          build:<subdir> = compiled from a sub-folder of another source
+TRELLIS.2  https://github.com/microsoft/TRELLIS.2.git     75fbf0183001ed9876c8dbb35de6b68552ee08bd  path
+o-voxel    TRELLIS.2                                      -                                         build:o-voxel
+CuMesh     https://github.com/JeffreyXiang/CuMesh.git     12289e1062f0603f2f0d0771b02e1395d247f26f  build
+FlexGEMM   https://github.com/JeffreyXiang/FlexGEMM.git   6dd94a859c26ee8246888502eada3dd8ad85532e  build
+utils3d    https://github.com/EasternJournalist/utils3d.git 9a4eb15e4021b67b12c460c7057d642626897ec8 python

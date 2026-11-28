@@ -1,0 +1,232 @@
+{
+  "created": "2026-11-21T11:31:11+00:00",
+  "model_file": "robot.glb",
+  "engine": "trellis-proj",
+  "settings": {
+    "height": 1.0,
+    "seed": 12345,
+    "max_faces": 40000,
+    "shape_views": [
+      "front"
+    ],
+    "texture_views": [
+      "front",
+      "back",
+      "left",
+      "right"
+    ]
+  },
+  "inputs": {
+    "folder": "original_characters/robot",
+    "sha256": {
+      "front": "02d5a8f612f2b1be763cac33db6346620f2109ca89da71f580bbe2abe9d5c4a1",
+      "left": "de4f0dda2ac65439d052913dcbd49e89ba200ed1bb7d9c976c1a394fb49eafc6",
+      "back": "ff2ae33cd1877da85988c4fc60f9969cb52057371068904f6cbb38bbf43e2333",
+      "right": "8754a566390cf963439af066e0176a2a5349156052cad08d2f3ff4ce3c479c09"
+    },
+    "source": {
+      "source": "rendered from code in this repo (original_characters/sdf_render.py + scenes/robot.py)",
+      "author": "RinoReyns (project owner)",
+      "licence": "own work",
+      "notes": "No third-party images or models used."
+    }
+  },
+  "components": [
+    {
+      "role": "pipeline (cut-out, clean, place, packaging)",
+      "licence": "project's own code",
+      "url": "~/Repos/image_to_model",
+      "restriction": "none",
+      "key": "img2glb-character"
+    },
+    {
+      "role": "background removal library",
+      "licence": "MIT",
+      "url": "https://github.com/danielgatis/rembg",
+      "package": "rembg",
+      "restriction": "none",
+      "key": "rembg"
+    },
+    {
+      "role": "background removal weights (u2net.onnx)",
+      "licence": "Apache-2.0",
+      "url": "https://github.com/xuebinqin/U-2-Net",
+      "weights_file": "u2net.onnx",
+      "restriction": "none",
+      "key": "u2net"
+    },
+    {
+      "role": "runs the u2net weights",
+      "licence": "MIT",
+      "url": "https://github.com/microsoft/onnxruntime",
+      "package": [
+        "onnxruntime",
+        "onnxruntime-gpu"
+      ],
+      "restriction": "none",
+      "key": "onnxruntime"
+    },
+    {
+      "role": "mesh I/O",
+      "licence": "MIT",
+      "url": "https://github.com/mikedh/trimesh",
+      "package": "trimesh",
+      "restriction": "none",
+      "key": "trimesh"
+    },
+    {
+      "role": "mesh reduction",
+      "licence": "MIT",
+      "url": "https://github.com/pyvista/fast-simplification",
+      "package": "fast-simplification",
+      "restriction": "none",
+      "key": "fast-simplification"
+    },
+    {
+      "role": "arrays",
+      "licence": "BSD-3-Clause",
+      "url": "https://github.com/numpy/numpy",
+      "package": "numpy",
+      "restriction": "none",
+      "key": "numpy"
+    },
+    {
+      "role": "distance fields, filters",
+      "licence": "BSD-3-Clause",
+      "url": "https://github.com/scipy/scipy",
+      "package": "scipy",
+      "restriction": "none",
+      "key": "scipy"
+    },
+    {
+      "role": "marching cubes, image regions",
+      "licence": "BSD-3-Clause",
+      "url": "https://github.com/scikit-image/scikit-image",
+      "package": "scikit-image",
+      "restriction": "none",
+      "key": "scikit-image"
+    },
+    {
+      "role": "image I/O",
+      "licence": "MIT-CMU (HPND)",
+      "url": "https://github.com/python-pillow/Pillow",
+      "package": "pillow",
+      "restriction": "none",
+      "key": "pillow"
+    },
+    {
+      "role": "GPU runtime",
+      "licence": "BSD-3-Clause",
+      "url": "https://github.com/pytorch/pytorch",
+      "package": "torch",
+      "restriction": "none",
+      "key": "pytorch"
+    },
+    {
+      "role": "shape model (microsoft/TRELLIS.2-4B) + trellis2 code + O-Voxel",
+      "licence": "MIT",
+      "url": "https://github.com/microsoft/TRELLIS.2",
+      "hf_repo": "microsoft/TRELLIS.2-4B",
+      "git_module": "trellis2",
+      "restriction": "none",
+      "key": "trellis2"
+    },
+    {
+      "role": "sparse-structure decoder used by TRELLIS.2 (microsoft/TRELLIS-image-large)",
+      "licence": "MIT",
+      "url": "https://huggingface.co/microsoft/TRELLIS-image-large",
+      "hf_repo": "microsoft/TRELLIS-image-large",
+      "restriction": "none",
+      "key": "trellis-image-large"
+    },
+    {
+      "role": "image encoder inside TRELLIS.2 (facebook/dinov3-vitl16-pretrain-lvd1689m)",
+      "licence": "DINOv3 License (Meta, custom, worldwide)",
+      "url": "https://ai.meta.com/resources/models-and-libraries/dinov3-license",
+      "hf_repo": "facebook/dinov3-vitl16-pretrain-lvd1689m",
+      "restriction": "none",
+      "condition": "Show \"Built with DINOv3\" wherever results are shown; follow the acceptable use policy.",
+      "attribution": "Built with DINOv3",
+      "key": "dinov3"
+    },
+    {
+      "role": "mesh hole filling (CuMesh core, without its cubvh part)",
+      "licence": "MIT",
+      "url": "https://github.com/JeffreyXiang/CuMesh",
+      "package": "cumesh",
+      "restriction": "none",
+      "key": "cumesh"
+    },
+    {
+      "role": "sparse convolution kernels",
+      "licence": "MIT",
+      "url": "https://github.com/JeffreyXiang/FlexGEMM",
+      "package": "flex_gemm",
+      "restriction": "none",
+      "key": "flexgemm"
+    },
+    {
+      "role": "attention kernels",
+      "licence": "BSD-3-Clause",
+      "url": "https://github.com/facebookresearch/xformers",
+      "package": "xformers",
+      "restriction": "none",
+      "key": "xformers"
+    },
+    {
+      "role": "3D utilities",
+      "licence": "MIT",
+      "url": "https://github.com/EasternJournalist/utils3d",
+      "package": "utils3d",
+      "restriction": "none",
+      "key": "utils3d"
+    },
+    {
+      "role": "colours projected from the input pictures (img2glb-character, numpy)",
+      "licence": "project's own code",
+      "url": "~/Repos/image_to_model",
+      "restriction": "none",
+      "key": "projection-colours"
+    }
+  ],
+  "runtime": {
+    "versions": {
+      "img2glb-character": "",
+      "rembg": "2.0.87",
+      "u2net": "sha256 8d10d2f3bb75ae3b",
+      "onnxruntime": "1.32.0",
+      "trimesh": "5.2.1",
+      "fast-simplification": "0.2.0",
+      "numpy": "2.4.6",
+      "scipy": "1.17.1",
+      "scikit-image": "0.26.0",
+      "pillow": "13.0.0",
+      "pytorch": "2.7.1+cu128",
+      "trellis2": "hf revision af44b45f2e35, git 75fbf0183001",
+      "trellis-image-large": "hf revision 25e0d31ffbeb",
+      "dinov3": "hf revision ea8dc2863c51",
+      "cumesh": "0.0.1",
+      "flexgemm": "1.0.0",
+      "xformers": "0.0.31.post1",
+      "utils3d": "0.0.2",
+      "projection-colours": ""
+    },
+    "restricted_modules_loaded": []
+  },
+  "usage": {
+    "status": "permissive-with-attribution",
+    "input_rights_known": true,
+    "summary": "Permissive licences only. Keep NOTICE.md with the model and show the required credits.",
+    "attributions": [
+      "Built with DINOv3"
+    ],
+    "conditions": [
+      "dinov3: Show \"Built with DINOv3\" wherever results are shown; follow the acceptable use policy."
+    ]
+  },
+  "checks": {
+    "faces": 39998,
+    "watertight": true,
+    "pieces": 1
+  }
+}

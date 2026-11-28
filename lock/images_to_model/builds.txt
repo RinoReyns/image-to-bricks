@@ -1,0 +1,5 @@
+# Packages built from source by scripts/setup_images_to_model.sh (commits pinned in sources.txt, checked in its step 4)
+cumesh @ local
+flex-gemm @ local
+o-voxel @ local
+utils3d @ 9a4eb15e4021b67b12c460c7057d642626897ec8

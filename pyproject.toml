@@ -1,13 +1,13 @@
 [project]
 name = "image-to-bricks"
-description = "Turn a coloured 3D model (GLB) into a LEGO build with step-by-step instructions."
+description = "Turn pictures of a character, or a coloured 3D model (GLB), into a LEGO build with step-by-step instructions."
 requires-python = ">=3.12"
 license = "GPL-3.0-or-later"
 
 [tool.ruff]
 line-length = 120
 target-version = "py312"
-extend-exclude = ["notes", "tests/fixtures/local"]
+extend-exclude = ["notes", "private", "tests/fixtures/local", ".deps", ".models"]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -117,8 +117,11 @@ python_version = "3.12"
 strict = true
 explicit_package_bases = true
 mypy_path = ["tests", "tests/fixtures/public"]
-files = ["image_to_bricks", "tools", "tests", "my_bricks_catalog", "model_to_bricks.py"]
-exclude = ["^notes/", "^tests/fixtures/local/"]
+files = [
+    "image_to_bricks", "tools", "tests", "my_bricks_catalog", "model_to_bricks.py", "images_to_model.py",
+    "images_to_bricks.py",
+]
+exclude = ["^notes/", "^private/", "^tests/fixtures/local/", "^\\.deps/", "^\\.models/"]
 warn_unreachable = true
 untyped_calls_exclude = ["trimesh"]  # trimesh ships partial annotations; its untyped helpers are called as-is
 
@@ -225,8 +228,12 @@ ignore_errors = true
 [tool.vulture]
 # dead code: run `vulture` (no arguments) in the project folder; pre-commit runs it on the whole project, because a
 # name used in another file is not dead. Tests are included, so helpers only tests use are not reported.
-paths = ["image_to_bricks", "tools", "tests", "my_bricks_catalog", "model_to_bricks.py"]
+paths = [
+    "image_to_bricks", "tools", "tests", "my_bricks_catalog", "model_to_bricks.py", "images_to_model.py",
+    "images_to_bricks.py",
+]
 min_confidence = 60
 # names a library reads, not our code: pyrender camera attribute, matplotlib keyword arguments in the
-# outputs_handler.VoxelAxes protocol, check_cost.CostLine columns (written to the CSV by iterating the row)
-ignore_names = ["yfov", "edgecolor", "linewidth", "aspect", "unit_pln", "cost_pln"]
+# outputs_handler.VoxelAxes protocol, check_cost.CostLine columns (written to the CSV by iterating the row), module
+# attributes Python's import system reads (trellis_engine.register_package_without_init), the metadata protocol method
+ignore_names = ["yfov", "edgecolor", "linewidth", "aspect", "unit_pln", "cost_pln", "__path__", "__spec__", "__getitem__"]

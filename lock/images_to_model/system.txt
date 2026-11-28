@@ -1,0 +1,9 @@
+# Where the expected results were produced (with Python 3.11.15 and the lock's own numpy / scipy; the shared .venv
+# uses Python 3.12 and the versions of requirements.txt, so the numbers may differ slightly: reproduce shows by how
+# much). Other GPUs / drivers can run the setup but may give slightly different numbers too.
+python 3.12
+cuda-toolkit 12.8
+gpu NVIDIA GeForce RTX 5090
+compute-capability 12.0
+driver 615.71.09
+uv 0.13.9
