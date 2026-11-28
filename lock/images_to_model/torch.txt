@@ -1,0 +1,4 @@
+# From https://download.pytorch.org/whl/cu128 only (installed with --no-deps; their CUDA libraries are in requirements-gpu.txt)
+torch==2.7.1+cu128
+torchvision==0.22.1+cu128
+xformers==0.0.31.post1

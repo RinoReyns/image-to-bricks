@@ -3,6 +3,7 @@
 import argparse
 import os
 import sys
+from collections.abc import Sequence
 from typing import TextIO, cast
 
 from image_to_bricks.analysis import stability
@@ -1100,9 +1101,10 @@ def build_argument_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main() -> None:
-    """Build the LEGO model and its instructions from the command line."""
-    args = build_argument_parser().parse_args()
+def main(argv: Sequence[str] | None = None) -> None:
+    """Build the LEGO model and its instructions from the command line (argv: the arguments without the program
+    name; default sys.argv[1:])."""
+    args = build_argument_parser().parse_args(argv)
     if not args.no_log:
         start_log(args.outdir)
     options = options_from_arguments(args)

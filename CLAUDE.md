@@ -1,4 +1,4 @@
-# image-to-bricks (coloured 3D model (GLB) -> LEGO build + instructions)
+# image-to-bricks (pictures -> coloured 3D model (GLB) -> LEGO build + instructions)
 
 Layout:
 - `model_to_bricks.py`: command-line entry point (same commands as always); the code is in the `image_to_bricks/` package:
@@ -10,10 +10,17 @@ Layout:
   - `packing/`: placement (`optimize_brick_placement`), layer_packer, tie_repair, cleanup, l_pieces, accents, ...
   - `base/`: stand (base cells, margin), base_pieces (base packing), base_packer, base_layout, base_ties, base_fill
   - `analysis/` (stability, build order, debug images), `instructions/` (PDF, layer maps, renders).
+- `images_to_model.py` / `image_to_bricks/images_to_model/`: pictures -> GLB (TRELLIS.2 shape, colours projected from
+  the pictures, licence package; `verification/` = metrics and lock-file checks of the GPU setup). GPU only:
+  `scripts/setup_images_to_model.sh` (Linux / WSL2) adds it to the same `.venv`, pinned in `lock/images_to_model/`;
+  `scripts/reproduce_images_to_model.sh` checks the results (`tools/images_to_model/`). The GPU libraries are imported
+  with importlib inside functions only, so the package and its tests run without them.
+- `images_to_bricks.py` / `image_to_bricks/images_to_bricks.py`: both steps in one command.
 - `tools/colorize_mesh.py`: colour a plain mesh from photos. `my_bricks_catalog/`: the user's bricks + catalogue scripts.
 - `tests/` (`python tests/run_all.py`, see `tests/README.txt`), `docs/` (plans and the clean-code rules).
 History: `git log` (one commit per step). Plan and current state: the Project docs (claude.ai Project "Lego Project").
-Local only, never in git: `notes/` (old development diary), the catalogue data (`my_bricks_catalog/*.csv`, its
+Local only, never in git: `private/` (files kept out of the public repo, e.g. the image-to-3D engine evaluation),
+`notes/` (old development diary), the catalogue data (`my_bricks_catalog/*.csv`, its
 README), `build_optimization/` (hand-built bases of local models).
 
 ## Always
@@ -36,7 +43,7 @@ README), `build_optimization/` (hand-built bases of local models).
 
 ## Checks (pre-commit, CI)
 - `pre-commit run --all-files` runs ruff (lint + format), mypy and basic file checks; CI (`.github/workflows/ci.yml`)
-  runs the same plus `tests/run_all.py`. Settings live in `pyproject.toml`.
+  runs the same plus `tests/run_all.py` on Linux, Windows and macOS. Settings live in `pyproject.toml`.
 - Strict rules everywhere; files that do not meet them yet are in the "not clean yet" lists in `pyproject.toml` (ruff
   per-file codes, mypy `ignore_errors` modules). When you clean a file, delete its entry in the same commit
   (`tests/test_lint_ratchet.py` fails on stale entries). Never add a new entry: new code is clean.
@@ -46,5 +53,5 @@ README), `build_optimization/` (hand-built bases of local models).
   pip yet. Annotate arrays as `NDArray[...]`, never bare `np.ndarray` (fails mypy with the pinned numpy 2.2).
 
 ## Environment
-- Windows, run from the project folder inside `.venv` (Python 3.12, see `.python-version`; CI also runs 3.13).
+- Windows, run from the project folder inside `.venv` (Python 3.12, see `.python-version`; CI also runs 3.13, on Linux, Windows and macOS).
 - Windows locks open images: never reuse an `--outdir`.

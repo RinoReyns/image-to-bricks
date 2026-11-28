@@ -1,0 +1,8 @@
+# hf  repo  revision  files ("*" = whole repo, "from-pipeline" = only the files TRELLIS.2-4B's pipeline.json refers to)
+hf microsoft/TRELLIS.2-4B af44b45f2e35a493886929c6d786e563ec68364d *
+hf facebook/dinov3-vitl16-pretrain-lvd1689m ea8dc2863c51be0a264bab82070e3e8836b02d51 *
+hf microsoft/TRELLIS-image-large 25e0d31ffbebe4b5a97464dd851910efc3002d96 from-pipeline
+# file  name  sha256  url
+file u2net.onnx 8d10d2f3bb75ae3b6d527c77944fc5e7dcd94b29809d47a739a7a728a912b491 https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2net.onnx
+# unused  repo  reason (named in pipeline.json but never downloaded or run)
+unused briaai/RMBG-2.0 CC BY-NC weights; replaced by UnusedBackgroundRemover, our u2net cut-out is used instead

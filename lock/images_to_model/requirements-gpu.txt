@@ -1,0 +1,75 @@
+# Packages the model step (images_to_model, GPU) needs on top of requirements.txt, at exact versions, installed with
+# --no-deps by scripts/setup_images_to_model.sh into the same .venv (torch, torchvision, xformers: torch.txt).
+# Made from the environment that produced lock/images_to_model/expected_results.json (2026-11-21, Python 3.11), with:
+#   - numpy, scipy, pillow, trimesh, networkx, tqdm, imageio, ... taken from requirements.txt (one shared venv; the
+#     brick goldens are frozen with those versions), opencv-python from requirements.txt instead of -headless (same cv2)
+#   - packages also in requirements-dev.txt at its versions (scikit-image, tifffile, filelock, pyyaml, ...), so both
+#     files can be installed together
+#   - no pytest (the tests run with tests/run_all.py), no nvdiffrast / nvdiffrec (NVIDIA research-only)
+# Keep in step with requirements.txt / requirements-dev.txt: tests/test_images_to_model_lockfiles.py fails when two
+# files pin a package to different versions.
+attrs==26.1.0
+certifi==2026.10.23
+easydict==1.14
+filelock==4.2.12
+flatbuffers==25.12.19
+fsspec==2026.9.0
+glcontext==3.1.0
+hf-xet==1.8.0
+huggingface-hub==0.36.2
+idna==3.20
+imageio-ffmpeg==0.8.1
+jinja2==3.1.6
+jsonschema==4.26.0
+jsonschema-specifications==2025.9.1
+kornia==0.9.2
+kornia-rs==0.2.0
+lazy-loader==0.6
+llvmlite==0.50.0
+lpips==0.1.4
+markupsafe==3.0.3
+moderngl==5.13.0
+mpmath==1.3.0
+ninja==1.13.2
+numba==0.68.1
+nvidia-cublas-cu12==12.8.3.14
+nvidia-cuda-cupti-cu12==12.8.57
+nvidia-cuda-nvrtc-cu12==12.8.61
+nvidia-cuda-runtime-cu12==12.8.57
+nvidia-cudnn-cu12==9.7.1.26
+nvidia-cufft-cu12==11.3.3.41
+nvidia-cufile-cu12==1.13.0.11
+nvidia-curand-cu12==10.3.9.55
+nvidia-cusolver-cu12==11.7.2.55
+nvidia-cusparse-cu12==12.5.7.53
+nvidia-cusparselt-cu12==0.6.3
+nvidia-nccl-cu12==2.26.2
+nvidia-nvjitlink-cu12==12.8.61
+nvidia-nvtx-cu12==12.8.55
+onnxruntime==1.32.0
+pandas==3.1.1
+platformdirs==4.14.8
+plyfile==1.1.5
+pooch==1.9.0
+protobuf==7.36.2
+pybind11==3.1.0
+pymatting==1.1.16
+pyyaml==6.0.4
+referencing==0.37.0
+regex==2026.11.19
+rembg==2.0.87
+requests==2.34.2
+rpds-py==2026.9.1
+safetensors==0.8.0
+scikit-image==0.26.0
+setuptools==78.1.0
+sympy==1.14.0
+tifffile==2026.11.16
+timm==1.0.31
+tokenizers==0.22.2
+transformers==4.57.6
+triton==3.3.1
+typing-extensions==4.16.0
+urllib3==2.8.0
+wheel==0.48.0
+zstandard==0.25.0

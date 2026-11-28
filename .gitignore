@@ -305,6 +305,8 @@ my_bricks_catalog/*.csv
 my_bricks_catalog/README.md
 # Hand-built bases for local (third-party) models.
 build_optimization/
+# Evaluation record, moved local files, scratch (private/move_local_files.ps1).
+private/
 
 # --- Allowed exceptions (small files we create ourselves) ---------------
 # Test fixtures and README images may be committed on purpose.
@@ -318,3 +320,11 @@ tests/fixtures/local/
 # The fixtures exception above must not bring back Python caches.
 tests/fixtures/**/__pycache__/
 tests/fixtures/**/*.py[cod]
+
+# model step (images_to_model): environment, sources and models made by scripts/setup_images_to_model.sh, outputs
+.deps/
+.models/
+.venv*/
+repro_out/
+*_package/
+*_package.zip

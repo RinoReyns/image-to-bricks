@@ -51,6 +51,32 @@ FUNCTION-STYLE TESTS (need the real trimesh; helpers in tests/support.py)
                                             the placement check (and nothing without it)
   python tests/test_golden_builds.py        see GOLDEN BUILDS above
 
+MODEL STEP (images_to_model: pictures -> 3D model; fakes instead of the GPU models, helpers in
+images_to_model_helpers.py / images_to_model_fakes.py)
+  python tests/test_images_to_model_cutout.py      keep transparent pictures, remover's largest region, coverage limits
+  python tests/test_images_to_model_clean.py       weld, debris, reduce, fill holes, normals, solid rebuild, full report
+  python tests/test_images_to_model_place.py       floor, centre, height; bad height / flat mesh rejected
+  python tests/test_images_to_model_projection.py  colours from the pictures, turned mesh found, unseen filled, GLB export
+  python tests/test_images_to_model_pipeline.py    pictures (folder / single files) -> every work file, report, GLB,
+                                                   licence package; command line and its errors; PLY writer
+  python tests/test_images_to_model_provenance.py  usage status, restricted code at run time, input rights, GLB metadata,
+                                                   PROVENANCE.json, NOTICE.md, zip
+  python tests/test_images_to_model_trellis_engine.py  TRELLIS.2 adapter without a GPU: axis swap, RMBG-2.0 stand-in,
+                                                   Blackwell attention fix, lean package loading, offline model cache
+  python tests/test_images_to_model_metrics.py     shape / view metrics used by scripts/reproduce_images_to_model.sh
+  python tests/test_images_to_model_comparison.py  scoring a model, markdown table, contact sheet
+  python tests/test_images_to_model_reproduction.py  saved results: same numbers pass, drift / missing case / licence fail
+  python tests/test_images_to_model_lockfiles.py   lock files: installed packages, model lock, pipeline.json references,
+                                                   blob hashes, the shipped locks agree with requirements*.txt
+  python tests/test_images_to_model_tools.py       the reproduce scripts on a fake run: true shape of an SDF scene,
+                                                   scoring, saving and checking results, package check
+  python tests/test_images_to_bricks.py            images_to_bricks.py end to end with fakes (pictures -> GLB -> build +
+                                                   PDF), its options, face direction; the TRELLIS.2 robot builds upright
+  python tests/test_images_to_bricks_gpu.py        the real run on the GPU (robot pictures -> TRELLIS.2 -> bricks);
+                                                   SKIPPED until scripts/setup_images_to_model.sh has finished
+  The numbers of the real model step (shape vs true shapes, colours vs pictures) are checked by
+  bash scripts/reproduce_images_to_model.sh against lock/images_to_model/expected_results.json.
+
 SCRIPT-STYLE TESTS (older; synthetic, no mesh needed)
 Synthetic regression tests (no mesh needed). Run from the project folder:
   python tests/test_stability.py   graph / centre-of-mass checks on hand-built models

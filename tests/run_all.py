@@ -24,6 +24,7 @@ TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = os.path.dirname(TESTS_DIR)
 # Started first, so the long ones overlap with the many short ones (the order of the rest does not matter).
 SLOWEST_TEST_FILES = (
+    "test_images_to_bricks_gpu.py",
     "test_golden_builds.py",
     "test_pipeline_end_to_end.py",
     "test_cli_options.py",
@@ -31,8 +32,10 @@ SLOWEST_TEST_FILES = (
     "test_cleanup.py",
     "test_base_holds_together.py",
     "test_l_pieces.py",
+    "test_images_to_model_clean.py",
 )
-FAST_MODE_SKIPPED_FILES = {"test_golden_builds.py", "test_pipeline_end_to_end.py"}  # real CLI builds, ~1 min each
+# real CLI builds (~1 min each) and the GPU run of the model step (~3 min)
+FAST_MODE_SKIPPED_FILES = {"test_golden_builds.py", "test_pipeline_end_to_end.py", "test_images_to_bricks_gpu.py"}
 EXHAUSTIVE_ENVIRONMENT_VARIABLE = "BRICKS_EXHAUSTIVE_TESTS"  # same name as in support.py (read by the test files)
 SHARD_ENVIRONMENT_VARIABLE = "BRICKS_TEST_SHARD"  # same name as in support.py (support.select_shard)
 # Exhaustive sweeps that check independent cases: with --exhaustive each one is split into --jobs processes.
@@ -137,7 +140,7 @@ def run_test_job(job: TestJob, is_exhaustive: bool, running_files: set[str]) -> 
 
 def print_result(result: FileResult) -> None:
     status = "ok  " if result.is_passed else "FAIL"
-    print(f"{status} {result.file_name:34s} {result.seconds:6.1f} s  {result.counts_text}", flush=True)
+    print(f"{status} {result.file_name:42s} {result.seconds:6.1f} s  {result.counts_text}", flush=True)
     for skip_line in result.skip_lines:
         print(f"       {skip_line}")
     if not result.is_passed:
